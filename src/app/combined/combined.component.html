@@ -1,0 +1,247 @@
+<div class="combined-dashboard">
+  <!-- Top Summary Bar -->
+  <div class="summary-bar">
+    @if (viewModel$ | async; as vm) {
+      <div class="summary-card">
+        <span class="label">Open Trades</span>
+        <span class="value">{{ vm.openTradesCount }}</span>
+      </div>
+      <div class="summary-card btc">
+        <span class="label">🔶 BTC Positions</span>
+        <span class="value">{{ vm.btcOpenTrades }}</span>
+      </div>
+      <div class="summary-card options">
+        <span class="label">🔷 Options Positions</span>
+        <span class="value">{{ vm.optionsOpenTrades }}</span>
+      </div>
+      <div class="summary-card" [class.profit]="vm.totalPaperPnl > 0" [class.loss]="vm.totalPaperPnl < 0">
+        <span class="label">Paper PnL</span>
+        <span class="value">{{ formatPnl(vm.totalPaperPnl) }}</span>
+      </div>
+      <div class="summary-card live" *ngIf="vm.activeLiveCount > 0">
+        <span class="label">Live Active</span>
+        <span class="value">{{ vm.activeLiveCount }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="content">
+    @if (viewModel$ | async; as vm) {
+      <!-- BTC Section -->
+      <mat-expansion-panel class="section-panel btc" [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <span class="section-icon">🔶</span>
+            <span class="section-title">BTCUSDT Trading</span>
+            @if (vm.btcSummaries[0]; as btc) {
+              <mat-chip [color]="getStatusColor(btc.fsmState)" selected>{{ btc.fsmState }}</mat-chip>
+              @if (btc.ltp) {
+                <span class="header-ltp">LTP: {{ formatNumber(btc.ltp) }}</span>
+              }
+              @if (btc.hasOpenTrade) {
+                <span class="header-pnl" [class.profit]="btc.paperPnl > 0" [class.loss]="btc.paperPnl < 0">
+                  {{ formatPnl(btc.paperPnl) }}
+                </span>
+              }
+              <span class="header-live">{{ getLiveStatusIcon(btc.liveStatus) }}</span>
+            }
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="section-content">
+          <!-- BTC Signals Table -->
+          <div class="table-section">
+            <h4>📡 Signals</h4>
+            @if (vm.btcSignals.length > 0) {
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Time (IST)</th>
+                    <th>Intent</th>
+                    <th>Stop Px</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (signal of vm.btcSignals.slice(0, 5); track signal.timeIst) {
+                    <tr>
+                      <td>{{ signal.timeIst }}</td>
+                      <td><mat-chip size="small">{{ signal.intent }}</mat-chip></td>
+                      <td>{{ formatNumber(signal.stoppx) }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            } @else {
+              <p class="empty">No signals yet</p>
+            }
+          </div>
+
+          <!-- BTC Paper Trades Table -->
+          <div class="table-section">
+            <h4>📋 Paper Trades</h4>
+            @if (vm.btcTrades.length > 0) {
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Time (IST)</th>
+                    <th>Entry</th>
+                    <th>Current</th>
+                    <th>Unrealized</th>
+                    <th>Cumulative</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (trade of vm.btcTrades.slice(0, 5); track trade.id) {
+                    <tr>
+                      <td>{{ trade.timeIst }}</td>
+                      <td>{{ formatNumber(trade.entryPrice) }}</td>
+                      <td>{{ formatNumber(trade.currentPrice) }}</td>
+                      <td [class.profit]="(trade.unrealizedPnl ?? 0) > 0" [class.loss]="(trade.unrealizedPnl ?? 0) < 0">
+                        {{ trade.unrealizedPnl !== null ? formatPnl(trade.unrealizedPnl) : '--' }}
+                      </td>
+                      <td>{{ trade.cumulativePnl !== null ? formatPnl(trade.cumulativePnl) : '--' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            } @else {
+              <p class="empty">No paper trades</p>
+            }
+          </div>
+
+          <!-- BTC Live Trades Table -->
+          <div class="table-section">
+            <h4>
+              🎯 Live Trades
+              @if (vm.btcLiveMode) {
+                <mat-chip color="primary" selected>ACTIVE (PnL > $4)</mat-chip>
+              } @else if (vm.btcBlockedSeconds && vm.btcBlockedSeconds > 0) {
+                <mat-chip color="warn" selected>🔒 BLOCKED ({{ vm.btcBlockedSeconds }}s)</mat-chip>
+              } @else {
+                <mat-chip>IDLE (PnL ≤ $4)</mat-chip>
+              }
+            </h4>
+            @if (vm.btcLiveTrades.length > 0) {
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Time (IST)</th>
+                    <th>Action</th>
+                    <th>Entry</th>
+                    <th>Exit</th>
+                    <th>Realized</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (trade of vm.btcLiveTrades.slice(0, 5); track trade.id) {
+                    <tr>
+                      <td>{{ trade.timeIst }}</td>
+                      <td><mat-chip size="small" [color]="trade.action === 'ENTRY' ? 'primary' : 'warn'" selected>{{ trade.action }}</mat-chip></td>
+                      <td>{{ formatNumber(trade.entryPrice) }}</td>
+                      <td>{{ trade.exitPrice ? formatNumber(trade.exitPrice) : '--' }}</td>
+                      <td [class.profit]="(trade.realizedPnl ?? 0) > 0" [class.loss]="(trade.realizedPnl ?? 0) < 0">
+                        {{ trade.realizedPnl !== null ? formatPnl(trade.realizedPnl) : '--' }}
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            } @else {
+              <p class="empty">No live trades yet. Live mode activates when Paper PnL > $4</p>
+            }
+          </div>
+
+          <div class="section-actions">
+            <a mat-stroked-button routerLink="/btc">Open Full BTC View →</a>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Options Section -->
+      <mat-expansion-panel class="section-panel options">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <span class="section-icon">🔷</span>
+            <span class="section-title">Options Trading</span>
+            <span class="instrument-count">{{ vm.optionsSummaries.length }} instruments</span>
+            @if (vm.optionsOpenTrades > 0) {
+              <mat-chip color="primary" selected>{{ vm.optionsOpenTrades }} positions</mat-chip>
+            }
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="section-content">
+          @if (vm.optionsSummaries.length === 0) {
+            <p class="empty">No option instruments tracked yet. Signals will appear here.</p>
+          } @else {
+            <mat-accordion class="instruments-accordion" multi>
+              @for (opt of vm.optionsSummaries; track opt.symbol) {
+                <mat-expansion-panel class="instrument-panel" [class.active-position]="opt.fsmState === 'BUYPOSITION'">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <span class="inst-symbol">{{ opt.symbol }}</span>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                      <mat-chip size="small" [color]="getStatusColor(opt.fsmState)" selected>{{ opt.fsmState }}</mat-chip>
+                      <span class="inst-ltp">LTP: {{ formatNumber(opt.ltp) }}</span>
+                      @if (opt.threshold) {
+                        <span class="inst-threshold">Thresh: {{ formatNumber(opt.threshold) }}</span>
+                      }
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+
+                  <div class="instrument-details">
+                    <div class="detail-grid">
+                      <div class="detail-item">
+                        <span class="label">Current State</span>
+                        <span class="value">
+                          <mat-chip [color]="getStatusColor(opt.fsmState)" selected>{{ opt.fsmState }}</mat-chip>
+                        </span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="label">LTP</span>
+                        <span class="value">{{ formatNumber(opt.ltp) }}</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="label">Active Threshold</span>
+                        <span class="value">{{ opt.threshold ? formatNumber(opt.threshold) : '--' }}</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="label">Saved BUY Threshold</span>
+                        <span class="value">{{ opt.savedBUYThreshold ? formatNumber(opt.savedBUYThreshold) : '--' }}</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="label">Last BUY Threshold</span>
+                        <span class="value buy-indicator">{{ opt.lastBUYThreshold ? formatNumber(opt.lastBUYThreshold) : '--' }}</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="label">Last SELL Threshold</span>
+                        <span class="value sell-indicator">{{ opt.lastSELLThreshold ? formatNumber(opt.lastSELLThreshold) : '--' }}</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="label">Last Signal</span>
+                        <span class="value">{{ getTimeAgo(opt.lastSignalAtMs) }}</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="label">Last Checked</span>
+                        <span class="value">{{ getTimeAgo(opt.lastCheckedAtMs) }}</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="label">Last Blocked</span>
+                        <span class="value">{{ getTimeAgo(opt.lastBlockedAtMs) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </mat-expansion-panel>
+              }
+            </mat-accordion>
+          }
+
+          <div class="section-actions">
+            <a mat-stroked-button routerLink="/app">Open Full Options View →</a>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    }
+  </div>
+</div>

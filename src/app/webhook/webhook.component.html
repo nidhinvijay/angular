@@ -1,0 +1,159 @@
+<section class="webhook-page">
+  <mat-toolbar color="primary" class="webhook-toolbar">
+    <span>BTC Trading Engine</span>
+    <span class="spacer"></span>
+    <span class="toolbar-subhead">Server: http://localhost:3001</span>
+  </mat-toolbar>
+
+  @if (engineState$ | async; as state) {
+    <div class="two-column-grid">
+      <!-- LONG SECTION -->
+      <mat-card class="card long-card">
+        <mat-card-header class="card-header">
+          <mat-card-title>
+            📈 LONG Position
+            @if (state.long?.liveState?.isLiveActive) {
+              <mat-chip color="primary" selected>LIVE ACTIVE</mat-chip>
+            } @else if (state.long?.liveState?.blockedAtMs) {
+              <mat-chip color="warn">🔒 BLOCKED</mat-chip>
+            } @else {
+              <mat-chip>IDLE</mat-chip>
+            }
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <!-- Paper Trade -->
+          <h4>Paper Trade</h4>
+          @if (state.long?.paperTrade) {
+            <div class="trade-info">
+              <div class="info-row">
+                <span class="label">Entry:</span>
+                <span class="value">{{ state.long!.paperTrade!.entryPrice | number:'1.2-2' }}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">Current:</span>
+                <span class="value">{{ state.long!.paperTrade!.currentPrice | number:'1.2-2' }}</span>
+              </div>
+              <div class="info-row pnl-row">
+                <span class="label">Unrealized PnL:</span>
+                <span class="value" [class.profit]="state.long!.paperTrade!.unrealizedPnl > 0" [class.loss]="state.long!.paperTrade!.unrealizedPnl < 0">
+                  ${{ state.long!.paperTrade!.unrealizedPnl | number:'1.2-2' }}
+                </span>
+              </div>
+            </div>
+          } @else {
+            <p class="empty">No LONG position open. Send a BUY signal to open.</p>
+          }
+
+          <!-- Live Trades -->
+          <h4>Live Trades</h4>
+          @if ((state.long?.liveState?.trades?.length || 0) > 0) {
+            <div class="trades-list">
+              @for (trade of state.long.liveState.trades.slice(0, 10); track trade.id) {
+                <div class="trade-row" [class.entry]="trade.action === 'ENTRY'" [class.exit]="trade.action === 'EXIT'">
+                  <span class="time">{{ trade.timeIst }}</span>
+                  <span class="action">{{ trade.action }}</span>
+                  <span class="price">@ {{ trade.entryPrice | number:'1.2-2' }}</span>
+                  @if (trade.realizedPnl !== null) {
+                    <span class="pnl" [class.profit]="trade.realizedPnl > 0" [class.loss]="trade.realizedPnl < 0">
+                      ${{ trade.realizedPnl | number:'1.2-2' }}
+                    </span>
+                  }
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty">No live trades yet. (Activates when PnL > $0)</p>
+          }
+
+          <!-- Cumulative PnL -->
+          <div class="cumulative-pnl">
+            <span class="label">Cumulative Live PnL:</span>
+            <span class="value" [class.profit]="(state.long?.liveState?.cumulativePnl || 0) > 0" [class.loss]="(state.long?.liveState?.cumulativePnl || 0) < 0">
+              ${{ state.long?.liveState?.cumulativePnl || 0 | number:'1.2-2' }}
+            </span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- SHORT SECTION -->
+      <mat-card class="card short-card">
+        <mat-card-header class="card-header">
+          <mat-card-title>
+            📉 SHORT Position
+            @if (state.short?.liveState?.isLiveActive) {
+              <mat-chip color="primary" selected>LIVE ACTIVE</mat-chip>
+            } @else if (state.short?.liveState?.blockedAtMs) {
+              <mat-chip color="warn">🔒 BLOCKED</mat-chip>
+            } @else {
+              <mat-chip>IDLE</mat-chip>
+            }
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <!-- Paper Trade -->
+          <h4>Paper Trade</h4>
+          @if (state.short?.paperTrade) {
+            <div class="trade-info">
+              <div class="info-row">
+                <span class="label">Entry:</span>
+                <span class="value">{{ state.short!.paperTrade!.entryPrice | number:'1.2-2' }}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">Current:</span>
+                <span class="value">{{ state.short!.paperTrade!.currentPrice | number:'1.2-2' }}</span>
+              </div>
+              <div class="info-row pnl-row">
+                <span class="label">Unrealized PnL:</span>
+                <span class="value" [class.profit]="state.short!.paperTrade!.unrealizedPnl > 0" [class.loss]="state.short!.paperTrade!.unrealizedPnl < 0">
+                  ${{ state.short!.paperTrade!.unrealizedPnl | number:'1.2-2' }}
+                </span>
+              </div>
+            </div>
+          } @else {
+            <p class="empty">No SHORT position open. Send a SELL signal to open.</p>
+          }
+
+          <!-- Live Trades -->
+          <h4>Live Trades</h4>
+          @if ((state.short?.liveState?.trades?.length || 0) > 0) {
+            <div class="trades-list">
+              @for (trade of state.short.liveState.trades.slice(0, 10); track trade.id) {
+                <div class="trade-row" [class.entry]="trade.action === 'ENTRY'" [class.exit]="trade.action === 'EXIT'">
+                  <span class="time">{{ trade.timeIst }}</span>
+                  <span class="action">{{ trade.action }}</span>
+                  <span class="price">@ {{ trade.entryPrice | number:'1.2-2' }}</span>
+                  @if (trade.realizedPnl !== null) {
+                    <span class="pnl" [class.profit]="trade.realizedPnl > 0" [class.loss]="trade.realizedPnl < 0">
+                      ${{ trade.realizedPnl | number:'1.2-2' }}
+                    </span>
+                  }
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty">No live trades yet. (Activates when PnL > $0)</p>
+          }
+
+          <!-- Cumulative PnL -->
+          <div class="cumulative-pnl">
+            <span class="label">Cumulative Live PnL:</span>
+            <span class="value" [class.profit]="(state.short?.liveState?.cumulativePnl || 0) > 0" [class.loss]="(state.short?.liveState?.cumulativePnl || 0) < 0">
+              ${{ state.short?.liveState?.cumulativePnl || 0 | number:'1.2-2' }}
+            </span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- LTP Display -->
+    <div class="ltp-bar">
+      <strong>LTP:</strong>
+      @for (item of state.ltp | keyvalue; track item.key) {
+        <span class="ltp-item">{{ item.key }}: {{ item.value | number:'1.2-2' }}</span>
+      }
+    </div>
+  } @else {
+    <p class="loading">Connecting to trading engine...</p>
+  }
+</section>

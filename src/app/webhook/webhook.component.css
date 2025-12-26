@@ -1,0 +1,260 @@
+.webhook-page {
+  padding: 16px;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+.webhook-toolbar {
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.toolbar-subhead {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-right: 16px;
+}
+
+.two-column-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  color: #333333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.long-card {
+  border-left: 4px solid #22c55e;
+}
+
+.short-card {
+  border-left: 4px solid #ef4444;
+}
+
+.card-header {
+  padding: 16px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+mat-card-content {
+  padding: 16px;
+}
+
+h4 {
+  margin: 16px 0 8px 0;
+  font-size: 12px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+h4:first-child {
+  margin-top: 0;
+}
+
+.trade-info {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row .label {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.info-row .value {
+  font-weight: 600;
+  font-family: 'Roboto Mono', monospace;
+  color: #1f2937;
+}
+
+.pnl-row .value.profit {
+  color: #16a34a;
+}
+
+.pnl-row .value.loss {
+  color: #dc2626;
+}
+
+.trades-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.trade-row {
+  display: flex;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  border: 1px solid #e5e7eb;
+}
+
+.trade-row.entry {
+  border-left: 3px solid #22c55e;
+}
+
+.trade-row.exit {
+  border-left: 3px solid #ef4444;
+}
+
+.trade-row .time {
+  color: #6b7280;
+  width: 140px;
+  font-size: 12px;
+}
+
+.trade-row .action {
+  font-weight: 600;
+  width: 50px;
+}
+
+.trade-row.entry .action {
+  color: #16a34a;
+}
+
+.trade-row.exit .action {
+  color: #dc2626;
+}
+
+.trade-row .price {
+  flex: 1;
+  font-family: 'Roboto Mono', monospace;
+  color: #374151;
+}
+
+.trade-row .pnl {
+  font-weight: 600;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.trade-row .pnl.profit {
+  color: #16a34a;
+}
+
+.trade-row .pnl.loss {
+  color: #dc2626;
+}
+
+.cumulative-pnl {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  margin-top: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.cumulative-pnl .label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.cumulative-pnl .value {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.cumulative-pnl .value.profit {
+  color: #16a34a;
+}
+
+.cumulative-pnl .value.loss {
+  color: #dc2626;
+}
+
+.empty {
+  color: #9ca3af;
+  font-style: italic;
+  padding: 16px;
+  text-align: center;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px dashed #d1d5db;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.ltp-bar {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ltp-bar strong {
+  color: #6b7280;
+}
+
+.ltp-item {
+  font-family: 'Roboto Mono', monospace;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+/* Scrollbar styling */
+.trades-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.trades-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.trades-list::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .two-column-grid {
+    grid-template-columns: 1fr;
+  }
+}

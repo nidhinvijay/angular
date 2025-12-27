@@ -66,7 +66,8 @@ export class WebhookService implements OnDestroy {
   readonly engineState$ = this.engineStateSubject.asObservable();
 
   constructor() {
-    this.socket = io('http://localhost:3001');
+    // Use same origin - works when Angular is served from the same server
+    this.socket = io();
 
     this.socket.on('connect', () => {
       console.log('[webhook] socket connected', this.socket.id);

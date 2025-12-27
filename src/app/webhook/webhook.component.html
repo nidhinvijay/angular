@@ -12,9 +12,9 @@
         <mat-card-header class="card-header">
           <mat-card-title>
             📈 LONG Position
-            @if (state.long?.liveState?.isLiveActive) {
+            @if (state.long.liveState.isLiveActive) {
               <mat-chip color="primary" selected>LIVE ACTIVE</mat-chip>
-            } @else if (state.long?.liveState?.blockedAtMs) {
+            } @else if (state.long.liveState.blockedAtMs) {
               <mat-chip color="warn">🔒 BLOCKED</mat-chip>
             } @else {
               <mat-chip>IDLE</mat-chip>
@@ -24,7 +24,7 @@
         <mat-card-content>
           <!-- Paper Trade -->
           <h4>Paper Trade</h4>
-          @if (state.long?.paperTrade) {
+          @if (state.long.paperTrade) {
             <div class="trade-info">
               <div class="info-row">
                 <span class="label">Entry:</span>
@@ -47,7 +47,7 @@
 
           <!-- Live Trades -->
           <h4>Live Trades</h4>
-          @if ((state.long?.liveState?.trades?.length || 0) > 0) {
+          @if (state.long.liveState.trades.length > 0) {
             <div class="trades-list">
               @for (trade of state.long.liveState.trades.slice(0, 10); track trade.id) {
                 <div class="trade-row" [class.entry]="trade.action === 'ENTRY'" [class.exit]="trade.action === 'EXIT'">
@@ -69,8 +69,8 @@
           <!-- Cumulative PnL -->
           <div class="cumulative-pnl">
             <span class="label">Cumulative Live PnL:</span>
-            <span class="value" [class.profit]="(state.long?.liveState?.cumulativePnl || 0) > 0" [class.loss]="(state.long?.liveState?.cumulativePnl || 0) < 0">
-              ${{ state.long?.liveState?.cumulativePnl || 0 | number:'1.2-2' }}
+            <span class="value" [class.profit]="state.long.liveState.cumulativePnl > 0" [class.loss]="state.long.liveState.cumulativePnl < 0">
+              ${{ state.long.liveState.cumulativePnl | number:'1.2-2' }}
             </span>
           </div>
         </mat-card-content>
@@ -81,9 +81,9 @@
         <mat-card-header class="card-header">
           <mat-card-title>
             📉 SHORT Position
-            @if (state.short?.liveState?.isLiveActive) {
+            @if (state.short.liveState.isLiveActive) {
               <mat-chip color="primary" selected>LIVE ACTIVE</mat-chip>
-            } @else if (state.short?.liveState?.blockedAtMs) {
+            } @else if (state.short.liveState.blockedAtMs) {
               <mat-chip color="warn">🔒 BLOCKED</mat-chip>
             } @else {
               <mat-chip>IDLE</mat-chip>
@@ -93,7 +93,7 @@
         <mat-card-content>
           <!-- Paper Trade -->
           <h4>Paper Trade</h4>
-          @if (state.short?.paperTrade) {
+          @if (state.short.paperTrade) {
             <div class="trade-info">
               <div class="info-row">
                 <span class="label">Entry:</span>
@@ -116,7 +116,7 @@
 
           <!-- Live Trades -->
           <h4>Live Trades</h4>
-          @if ((state.short?.liveState?.trades?.length || 0) > 0) {
+          @if (state.short.liveState.trades.length > 0) {
             <div class="trades-list">
               @for (trade of state.short.liveState.trades.slice(0, 10); track trade.id) {
                 <div class="trade-row" [class.entry]="trade.action === 'ENTRY'" [class.exit]="trade.action === 'EXIT'">
@@ -138,8 +138,8 @@
           <!-- Cumulative PnL -->
           <div class="cumulative-pnl">
             <span class="label">Cumulative Live PnL:</span>
-            <span class="value" [class.profit]="(state.short?.liveState?.cumulativePnl || 0) > 0" [class.loss]="(state.short?.liveState?.cumulativePnl || 0) < 0">
-              ${{ state.short?.liveState?.cumulativePnl || 0 | number:'1.2-2' }}
+            <span class="value" [class.profit]="state.short.liveState.cumulativePnl > 0" [class.loss]="state.short.liveState.cumulativePnl < 0">
+              ${{ state.short.liveState.cumulativePnl | number:'1.2-2' }}
             </span>
           </div>
         </mat-card-content>

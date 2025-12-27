@@ -44,6 +44,8 @@ export type EngineLiveState = {
 };
 
 export type EnginePositionState = {
+  fsmState: string;  // NOPOSITION, NOPOSITION_SIGNAL, BUYPOSITION, SELLPOSITION, NOPOSITION_BLOCKED
+  threshold: number | null;  // stoppx from signal
   paperTrade: EnginePaperTrade | null;
   liveState: EngineLiveState;
   signals: EngineSignal[];

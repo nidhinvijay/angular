@@ -9,6 +9,14 @@
   </mat-toolbar>
 
   @if (engineState$ | async; as state) {
+    <!-- LTP Display -->
+    <div class="ltp-bar">
+      <strong>LTP:</strong>
+      @for (item of state.ltp | keyvalue; track item.key) {
+        <span class="ltp-item">{{ item.key }}: {{ item.value | number:'1.2-2' }}</span>
+      }
+    </div>
+
     <div class="two-column-grid">
       <!-- LONG SECTION -->
       <mat-card class="card long-card">
@@ -287,14 +295,6 @@
           </div>
         </mat-card-content>
       </mat-card>
-    </div>
-
-    <!-- LTP Display -->
-    <div class="ltp-bar">
-      <strong>LTP:</strong>
-      @for (item of state.ltp | keyvalue; track item.key) {
-        <span class="ltp-item">{{ item.key }}: {{ item.value | number:'1.2-2' }}</span>
-      }
     </div>
   } @else {
     <p class="loading">Connecting to trading engine...</p>

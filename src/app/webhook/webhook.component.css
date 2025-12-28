@@ -328,23 +328,28 @@ h4:first-child {
 }
 
 .ltp-bar {
-  background: #ffffff;
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
   border-radius: 8px;
-  padding: 12px 16px;
+  padding: 14px 20px;
   display: flex;
   gap: 24px;
   align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-bottom: 16px;
 }
 
 .ltp-bar strong {
-  color: #6b7280;
+  color: #9ca3af;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .ltp-item {
   font-family: 'Roboto Mono', monospace;
-  color: #1f2937;
-  font-weight: 500;
+  color: #22c55e;
+  font-weight: 600;
+  font-size: 18px;
 }
 
 /* Scrollbar styling */

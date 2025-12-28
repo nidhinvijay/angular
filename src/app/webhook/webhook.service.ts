@@ -66,6 +66,10 @@ export type EnginePositionState = {
   currentPeakPnl: number | null;
   liveState: EngineLiveState;
   signals: EngineSignal[];
+  cumPaperPnl: number;      // unrealized + sum of paper trades history PnL
+  cumLivePnl: number;       // sum of live trades realized PnL only
+  paperTradeCount: number;  // total paper trades (closed + open)
+  liveTradeCount: number;   // total live trades (closed + open)
 };
 
 export type EngineState = {

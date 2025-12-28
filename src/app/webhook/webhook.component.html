@@ -78,7 +78,7 @@
           }
 
           <!-- Paper Trades History -->
-          <h4>Paper Trades History</h4>
+          <h4>Paper Trades History <span class="trade-count">({{ state.long.paperTradeCount }} trades)</span></h4>
           @if ((state.long.paperTrades ?? []).length > 0) {
             <div class="trades-list scrollable">
               @for (trade of state.long.paperTrades ?? []; track trade.closedAt) {
@@ -96,7 +96,7 @@
           }
 
           <!-- Live Trades -->
-          <h4>Live Trades</h4>
+          <h4>Live Trades <span class="trade-count">({{ state.long.liveTradeCount }} trades)</span></h4>
           @if (state.long.liveState.trades.length > 0) {
             <div class="trades-list scrollable">
               @for (trade of state.long.liveState.trades; track trade.id) {
@@ -134,10 +134,16 @@
           }
 
           <!-- Cumulative PnL -->
-          <div class="cumulative-pnl">
+          <div class="cumulative-pnl paper">
+            <span class="label">Cumulative Paper PnL:</span>
+            <span class="value" [class.profit]="state.long.cumPaperPnl > 0" [class.loss]="state.long.cumPaperPnl < 0">
+              ${{ state.long.cumPaperPnl | number:'1.2-2' }}
+            </span>
+          </div>
+          <div class="cumulative-pnl live">
             <span class="label">Cumulative Live PnL:</span>
-            <span class="value" [class.profit]="state.long.liveState.cumulativePnl > 0" [class.loss]="state.long.liveState.cumulativePnl < 0">
-              ${{ state.long.liveState.cumulativePnl | number:'1.2-2' }}
+            <span class="value" [class.profit]="state.long.cumLivePnl > 0" [class.loss]="state.long.cumLivePnl < 0">
+              ${{ state.long.cumLivePnl | number:'1.2-2' }}
             </span>
           </div>
         </mat-card-content>
@@ -211,7 +217,7 @@
           }
 
           <!-- Paper Trades History -->
-          <h4>Paper Trades History</h4>
+          <h4>Paper Trades History <span class="trade-count">({{ state.short.paperTradeCount }} trades)</span></h4>
           @if ((state.short.paperTrades ?? []).length > 0) {
             <div class="trades-list scrollable">
               @for (trade of state.short.paperTrades ?? []; track trade.closedAt) {
@@ -229,7 +235,7 @@
           }
 
           <!-- Live Trades -->
-          <h4>Live Trades</h4>
+          <h4>Live Trades <span class="trade-count">({{ state.short.liveTradeCount }} trades)</span></h4>
           @if (state.short.liveState.trades.length > 0) {
             <div class="trades-list scrollable">
               @for (trade of state.short.liveState.trades; track trade.id) {
@@ -267,10 +273,16 @@
           }
 
           <!-- Cumulative PnL -->
-          <div class="cumulative-pnl">
+          <div class="cumulative-pnl paper">
+            <span class="label">Cumulative Paper PnL:</span>
+            <span class="value" [class.profit]="state.short.cumPaperPnl > 0" [class.loss]="state.short.cumPaperPnl < 0">
+              ${{ state.short.cumPaperPnl | number:'1.2-2' }}
+            </span>
+          </div>
+          <div class="cumulative-pnl live">
             <span class="label">Cumulative Live PnL:</span>
-            <span class="value" [class.profit]="state.short.liveState.cumulativePnl > 0" [class.loss]="state.short.liveState.cumulativePnl < 0">
-              ${{ state.short.liveState.cumulativePnl | number:'1.2-2' }}
+            <span class="value" [class.profit]="state.short.cumLivePnl > 0" [class.loss]="state.short.cumLivePnl < 0">
+              ${{ state.short.cumLivePnl | number:'1.2-2' }}
             </span>
           </div>
         </mat-card-content>

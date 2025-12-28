@@ -33,6 +33,14 @@ export type EnginePaperTrade = {
   unrealizedPnl: number;
 };
 
+export type EnginePaperTradeHistory = EnginePaperTrade & {
+  exitPrice: number;
+  exitTimeIst: string;
+  realizedPnl: number;
+  reason: string;
+  closedAt: number;
+};
+
 export type EngineLiveState = {
   state: 'NO_POSITION' | 'POSITION';
   cumulativePnl: number;
@@ -43,10 +51,19 @@ export type EngineLiveState = {
   trades: any[];
 };
 
+export type PeakPnlRecord = {
+  pnl: number;
+  timeIst: string;
+  timestamp: number;
+};
+
 export type EnginePositionState = {
-  fsmState: string;  // NOPOSITION, NOPOSITION_SIGNAL, BUYPOSITION, SELLPOSITION, NOPOSITION_BLOCKED
-  threshold: number | null;  // stoppx from signal
+  fsmState: string;
+  threshold: number | null;
   paperTrade: EnginePaperTrade | null;
+  paperTrades: EnginePaperTradeHistory[];
+  peakPnlHistory: PeakPnlRecord[];
+  currentPeakPnl: number | null;
   liveState: EngineLiveState;
   signals: EngineSignal[];
 };

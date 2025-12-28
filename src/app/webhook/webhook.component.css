@@ -20,6 +20,21 @@
   margin-right: 16px;
 }
 
+.webhook-url {
+  font-size: 11px;
+  background: rgba(255,255,255,0.15);
+  padding: 6px 12px;
+  border-radius: 4px;
+  margin-right: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.webhook-url:hover {
+  background: rgba(255,255,255,0.25);
+}
+
 .two-column-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -71,6 +86,75 @@ h4 {
 
 h4:first-child {
   margin-top: 0;
+}
+
+/* FSM State Info */
+.fsm-info {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+  background: #1f2937;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.fsm-label {
+  color: #9ca3af;
+}
+
+.fsm-state {
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+.fsm-value {
+  color: #60a5fa;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.scrollable {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.signal-row {
+  background: #fefce8;
+  border: 1px solid #fef08a;
+}
+
+.signal-row .ltp {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+/* Peak PnL Styling */
+.peak-current {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #86efac;
+}
+
+.peak-label {
+  color: #166534;
+  font-weight: 500;
+}
+
+.peak-value {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.peak-row {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
 }
 
 .trade-info {

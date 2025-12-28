@@ -25,4 +25,12 @@ export class WebhookComponent {
   
   // Direct access to engine state from server
   readonly engineState$ = this.webhookService.engineState$;
+  
+  readonly webhookUrl = 'https://chronic-personally-notified-triangle.trycloudflare.com/webhook';
+  
+  copyWebhookUrl() {
+    navigator.clipboard.writeText(this.webhookUrl).then(() => {
+      alert('Webhook URL copied!');
+    });
+  }
 }

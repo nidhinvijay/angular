@@ -2,7 +2,10 @@
   <mat-toolbar color="primary" class="webhook-toolbar">
     <span>BTC Trading Engine</span>
     <span class="spacer"></span>
-    <span class="toolbar-subhead">Server: http://localhost:3001</span>
+    <span class="webhook-url" (click)="copyWebhookUrl()" title="Click to copy">
+      📋 https://chronic-personally-notified-triangle.trycloudflare.com/webhook
+    </span>
+    <span class="toolbar-subhead">Resets daily at 5:30 AM IST</span>
   </mat-toolbar>
 
   @if (engineState$ | async; as state) {
@@ -22,34 +25,81 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <!-- Paper Trade -->
-          <h4>Paper Trade</h4>
+          <!-- FSM State -->
+          <div class="fsm-info">
+            <span class="fsm-label">FSM:</span>
+            <span class="fsm-state">{{ state.long.fsmState }}</span>
+            <span class="fsm-label">Threshold:</span>
+            <span class="fsm-value">{{ state.long.threshold ?? '--' }}</span>
+          </div>
+
+          <!-- Current Paper Trade -->
+          <h4>Current Paper Trade</h4>
           @if (state.long.paperTrade) {
             <div class="trade-info">
               <div class="info-row">
                 <span class="label">Entry:</span>
-                <span class="value">{{ state.long!.paperTrade!.entryPrice | number:'1.2-2' }}</span>
+                <span class="value">{{ state.long.paperTrade.entryPrice | number:'1.2-2' }}</span>
               </div>
               <div class="info-row">
                 <span class="label">Current:</span>
-                <span class="value">{{ state.long!.paperTrade!.currentPrice | number:'1.2-2' }}</span>
+                <span class="value">{{ state.long.paperTrade.currentPrice | number:'1.2-2' }}</span>
               </div>
               <div class="info-row pnl-row">
                 <span class="label">Unrealized PnL:</span>
-                <span class="value" [class.profit]="state.long!.paperTrade!.unrealizedPnl > 0" [class.loss]="state.long!.paperTrade!.unrealizedPnl < 0">
-                  ${{ state.long!.paperTrade!.unrealizedPnl | number:'1.2-2' }}
+                <span class="value" [class.profit]="state.long.paperTrade.unrealizedPnl > 0" [class.loss]="state.long.paperTrade.unrealizedPnl < 0">
+                  ${{ state.long.paperTrade.unrealizedPnl | number:'1.2-2' }}
                 </span>
               </div>
             </div>
           } @else {
-            <p class="empty">No LONG position open. Send a BUY signal to open.</p>
+            <p class="empty">No LONG position open</p>
+          }
+
+          <!-- Peak PnL History -->
+          <h4>Peak PnL (Highest Unrealized)</h4>
+          @if (state.long.currentPeakPnl !== null) {
+            <div class="peak-current">
+              <span class="peak-label">Current Peak:</span>
+              <span class="peak-value profit">${{ state.long.currentPeakPnl | number:'1.2-2' }}</span>
+            </div>
+          }
+          @if ((state.long.peakPnlHistory ?? []).length > 0) {
+            <div class="trades-list scrollable">
+              @for (peak of state.long.peakPnlHistory ?? []; track peak.timestamp) {
+                <div class="trade-row peak-row">
+                  <span class="time">{{ peak.timeIst }}</span>
+                  <span class="pnl profit">${{ peak.pnl | number:'1.2-2' }}</span>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty">No peaks recorded</p>
+          }
+
+          <!-- Paper Trades History -->
+          <h4>Paper Trades History</h4>
+          @if ((state.long.paperTrades ?? []).length > 0) {
+            <div class="trades-list scrollable">
+              @for (trade of state.long.paperTrades ?? []; track trade.closedAt) {
+                <div class="trade-row">
+                  <span class="time">{{ trade.timeIst }}</span>
+                  <span class="price">{{ trade.entryPrice | number:'1.2-2' }} → {{ trade.exitPrice | number:'1.2-2' }}</span>
+                  <span class="pnl" [class.profit]="trade.realizedPnl > 0" [class.loss]="trade.realizedPnl < 0">
+                    ${{ trade.realizedPnl | number:'1.2-2' }}
+                  </span>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty">No paper trades</p>
           }
 
           <!-- Live Trades -->
           <h4>Live Trades</h4>
           @if (state.long.liveState.trades.length > 0) {
-            <div class="trades-list">
-              @for (trade of state.long.liveState.trades.slice(0, 10); track trade.id) {
+            <div class="trades-list scrollable">
+              @for (trade of state.long.liveState.trades; track trade.id) {
                 <div class="trade-row" [class.entry]="trade.action === 'ENTRY'" [class.exit]="trade.action === 'EXIT'">
                   <span class="time">{{ trade.timeIst }}</span>
                   <span class="action">{{ trade.action }}</span>
@@ -63,7 +113,24 @@
               }
             </div>
           } @else {
-            <p class="empty">No live trades yet. (Activates when PnL > $0)</p>
+            <p class="empty">No live trades (activates when PnL > $0)</p>
+          }
+
+          <!-- Signal History -->
+          <h4>Signal History</h4>
+          @if ((state.long.signals ?? []).length > 0) {
+            <div class="trades-list scrollable">
+              @for (signal of state.long.signals ?? []; track signal.receivedAt) {
+                <div class="trade-row signal-row">
+                  <span class="time">{{ signal.timeIst }}</span>
+                  <span class="action">{{ signal.intent }}</span>
+                  <span class="price">stoppx: {{ signal.stoppx ?? '--' }}</span>
+                  <span class="ltp">ltp: {{ signal.ltp ?? '--' }}</span>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty">No signals</p>
           }
 
           <!-- Cumulative PnL -->
@@ -91,34 +158,81 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <!-- Paper Trade -->
-          <h4>Paper Trade</h4>
+          <!-- FSM State -->
+          <div class="fsm-info">
+            <span class="fsm-label">FSM:</span>
+            <span class="fsm-state">{{ state.short.fsmState }}</span>
+            <span class="fsm-label">Threshold:</span>
+            <span class="fsm-value">{{ state.short.threshold ?? '--' }}</span>
+          </div>
+
+          <!-- Current Paper Trade -->
+          <h4>Current Paper Trade</h4>
           @if (state.short.paperTrade) {
             <div class="trade-info">
               <div class="info-row">
                 <span class="label">Entry:</span>
-                <span class="value">{{ state.short!.paperTrade!.entryPrice | number:'1.2-2' }}</span>
+                <span class="value">{{ state.short.paperTrade.entryPrice | number:'1.2-2' }}</span>
               </div>
               <div class="info-row">
                 <span class="label">Current:</span>
-                <span class="value">{{ state.short!.paperTrade!.currentPrice | number:'1.2-2' }}</span>
+                <span class="value">{{ state.short.paperTrade.currentPrice | number:'1.2-2' }}</span>
               </div>
               <div class="info-row pnl-row">
                 <span class="label">Unrealized PnL:</span>
-                <span class="value" [class.profit]="state.short!.paperTrade!.unrealizedPnl > 0" [class.loss]="state.short!.paperTrade!.unrealizedPnl < 0">
-                  ${{ state.short!.paperTrade!.unrealizedPnl | number:'1.2-2' }}
+                <span class="value" [class.profit]="state.short.paperTrade.unrealizedPnl > 0" [class.loss]="state.short.paperTrade.unrealizedPnl < 0">
+                  ${{ state.short.paperTrade.unrealizedPnl | number:'1.2-2' }}
                 </span>
               </div>
             </div>
           } @else {
-            <p class="empty">No SHORT position open. Send a SELL signal to open.</p>
+            <p class="empty">No SHORT position open</p>
+          }
+
+          <!-- Peak PnL History -->
+          <h4>Peak PnL (Highest Unrealized)</h4>
+          @if (state.short.currentPeakPnl !== null) {
+            <div class="peak-current">
+              <span class="peak-label">Current Peak:</span>
+              <span class="peak-value profit">${{ state.short.currentPeakPnl | number:'1.2-2' }}</span>
+            </div>
+          }
+          @if ((state.short.peakPnlHistory ?? []).length > 0) {
+            <div class="trades-list scrollable">
+              @for (peak of state.short.peakPnlHistory ?? []; track peak.timestamp) {
+                <div class="trade-row peak-row">
+                  <span class="time">{{ peak.timeIst }}</span>
+                  <span class="pnl profit">${{ peak.pnl | number:'1.2-2' }}</span>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty">No peaks recorded</p>
+          }
+
+          <!-- Paper Trades History -->
+          <h4>Paper Trades History</h4>
+          @if ((state.short.paperTrades ?? []).length > 0) {
+            <div class="trades-list scrollable">
+              @for (trade of state.short.paperTrades ?? []; track trade.closedAt) {
+                <div class="trade-row">
+                  <span class="time">{{ trade.timeIst }}</span>
+                  <span class="price">{{ trade.entryPrice | number:'1.2-2' }} → {{ trade.exitPrice | number:'1.2-2' }}</span>
+                  <span class="pnl" [class.profit]="trade.realizedPnl > 0" [class.loss]="trade.realizedPnl < 0">
+                    ${{ trade.realizedPnl | number:'1.2-2' }}
+                  </span>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty">No paper trades</p>
           }
 
           <!-- Live Trades -->
           <h4>Live Trades</h4>
           @if (state.short.liveState.trades.length > 0) {
-            <div class="trades-list">
-              @for (trade of state.short.liveState.trades.slice(0, 10); track trade.id) {
+            <div class="trades-list scrollable">
+              @for (trade of state.short.liveState.trades; track trade.id) {
                 <div class="trade-row" [class.entry]="trade.action === 'ENTRY'" [class.exit]="trade.action === 'EXIT'">
                   <span class="time">{{ trade.timeIst }}</span>
                   <span class="action">{{ trade.action }}</span>
@@ -132,7 +246,24 @@
               }
             </div>
           } @else {
-            <p class="empty">No live trades yet. (Activates when PnL > $0)</p>
+            <p class="empty">No live trades (activates when PnL > $0)</p>
+          }
+
+          <!-- Signal History -->
+          <h4>Signal History</h4>
+          @if ((state.short.signals ?? []).length > 0) {
+            <div class="trades-list scrollable">
+              @for (signal of state.short.signals ?? []; track signal.receivedAt) {
+                <div class="trade-row signal-row">
+                  <span class="time">{{ signal.timeIst }}</span>
+                  <span class="action">{{ signal.intent }}</span>
+                  <span class="price">stoppx: {{ signal.stoppx ?? '--' }}</span>
+                  <span class="ltp">ltp: {{ signal.ltp ?? '--' }}</span>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty">No signals</p>
           }
 
           <!-- Cumulative PnL -->

@@ -91,7 +91,7 @@
             <div class="trades-list scrollable">
               @for (trade of state.long.paperTrades ?? []; track trade.closedAt) {
                 <div class="trade-row">
-                  <span class="time">{{ trade.timeIst }}</span>
+                  <span class="time">{{ trade.timeIst }} → {{ trade.exitTimeIst }}</span>
                   <span class="price">{{ trade.entryPrice | number:'1.2-2' }} → {{ trade.exitPrice | number:'1.2-2' }}</span>
                   <span class="pnl" [class.profit]="trade.realizedPnl > 0" [class.loss]="trade.realizedPnl < 0">
                     ${{ trade.realizedPnl | number:'1.2-2' }}
@@ -230,7 +230,7 @@
             <div class="trades-list scrollable">
               @for (trade of state.short.paperTrades ?? []; track trade.closedAt) {
                 <div class="trade-row">
-                  <span class="time">{{ trade.timeIst }}</span>
+                  <span class="time">{{ trade.timeIst }} → {{ trade.exitTimeIst }}</span>
                   <span class="price">{{ trade.entryPrice | number:'1.2-2' }} → {{ trade.exitPrice | number:'1.2-2' }}</span>
                   <span class="pnl" [class.profit]="trade.realizedPnl > 0" [class.loss]="trade.realizedPnl < 0">
                     ${{ trade.realizedPnl | number:'1.2-2' }}

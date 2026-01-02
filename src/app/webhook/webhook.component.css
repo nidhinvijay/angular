@@ -220,7 +220,7 @@ h4:first-child {
 
 .trade-row .time {
   color: #6b7280;
-  width: 140px;
+  min-width: 280px;
   font-size: 12px;
 }
 

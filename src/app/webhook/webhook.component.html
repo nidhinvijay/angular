@@ -68,8 +68,8 @@
           <h4>Peak PnL (Highest Unrealized)</h4>
           @if (state.long.currentPeakPnl !== null) {
             <div class="peak-current">
-              <span class="peak-label">Current Peak:</span>
-              <span class="peak-value profit">${{ state.long.currentPeakPnl | number:'1.2-2' }}</span>
+              <span class="time">{{ state.long.currentPeakPnl.timeIst }}</span>
+              <span class="peak-value profit">${{ state.long.currentPeakPnl.pnl | number:'1.2-2' }}</span>
             </div>
           }
           @if ((state.long.peakPnlHistory ?? []).length > 0) {
@@ -207,8 +207,8 @@
           <h4>Peak PnL (Highest Unrealized)</h4>
           @if (state.short.currentPeakPnl !== null) {
             <div class="peak-current">
-              <span class="peak-label">Current Peak:</span>
-              <span class="peak-value profit">${{ state.short.currentPeakPnl | number:'1.2-2' }}</span>
+              <span class="time">{{ state.short.currentPeakPnl.timeIst }}</span>
+              <span class="peak-value profit">${{ state.short.currentPeakPnl.pnl | number:'1.2-2' }}</span>
             </div>
           }
           @if ((state.short.peakPnlHistory ?? []).length > 0) {

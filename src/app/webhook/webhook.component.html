@@ -46,6 +46,10 @@
           @if (state.long.paperTrade) {
             <div class="trade-info">
               <div class="info-row">
+                <span class="label">Entered At:</span>
+                <span class="value entry-time">{{ state.long.paperTrade.timeIst }}</span>
+              </div>
+              <div class="info-row">
                 <span class="label">Entry:</span>
                 <span class="value">{{ state.long.paperTrade.entryPrice | number:'1.2-2' }}</span>
               </div>
@@ -184,6 +188,10 @@
           <h4>Current Paper Trade</h4>
           @if (state.short.paperTrade) {
             <div class="trade-info">
+              <div class="info-row">
+                <span class="label">Entered At:</span>
+                <span class="value entry-time">{{ state.short.paperTrade.timeIst }}</span>
+              </div>
               <div class="info-row">
                 <span class="label">Entry:</span>
                 <span class="value">{{ state.short.paperTrade.entryPrice | number:'1.2-2' }}</span>

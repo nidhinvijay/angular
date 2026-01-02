@@ -73,7 +73,11 @@ export class HistoryComponent implements OnInit {
   }
 
   getLiveTradeCount(day: DailySnapshot): number {
-    return day.long.liveTrades.filter(t => t.action === 'EXIT').length + 
-           day.short.liveTrades.filter(t => t.action === 'EXIT').length;
+    return this.countExitTrades(day.long.liveTrades) + 
+           this.countExitTrades(day.short.liveTrades);
+  }
+
+  countExitTrades(trades: any[]): number {
+    return trades.filter(t => t.action === 'EXIT').length;
   }
 }

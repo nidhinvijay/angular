@@ -75,7 +75,7 @@
                 }
 
                 @if (day.long.liveTrades.length > 0) {
-                  <h4>Live Trades ({{ day.long.liveTrades.filter(t => t.action === 'EXIT').length }})</h4>
+                  <h4>Live Trades ({{ countExitTrades(day.long.liveTrades) }})</h4>
                   <div class="trades-list">
                     @for (trade of day.long.liveTrades; track trade.id) {
                       <div class="trade-row" [class.entry]="trade.action === 'ENTRY'" [class.exit]="trade.action === 'EXIT'">
@@ -152,7 +152,7 @@
                 }
 
                 @if (day.short.liveTrades.length > 0) {
-                  <h4>Live Trades ({{ day.short.liveTrades.filter(t => t.action === 'EXIT').length }})</h4>
+                  <h4>Live Trades ({{ countExitTrades(day.short.liveTrades) }})</h4>
                   <div class="trades-list">
                     @for (trade of day.short.liveTrades; track trade.id) {
                       <div class="trade-row" [class.entry]="trade.action === 'ENTRY'" [class.exit]="trade.action === 'EXIT'">

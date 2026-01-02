@@ -63,7 +63,7 @@ export type EnginePositionState = {
   paperTrade: EnginePaperTrade | null;
   paperTrades: EnginePaperTradeHistory[];
   peakPnlHistory: PeakPnlRecord[];
-  currentPeakPnl: number | null;
+  currentPeakPnl: { pnl: number; timeIst: string } | null;
   liveState: EngineLiveState;
   signals: EngineSignal[];
   cumPaperPnl: number;      // unrealized + sum of paper trades history PnL

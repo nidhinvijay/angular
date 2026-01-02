@@ -1,0 +1,191 @@
+<section class="history-page">
+  <mat-toolbar color="primary" class="toolbar">
+    <span>📊 Trading History</span>
+    <span class="spacer"></span>
+    <a routerLink="/btc" class="back-link">← Back to Live</a>
+  </mat-toolbar>
+
+  @if (loading) {
+    <p class="loading">Loading history...</p>
+  } @else if (error) {
+    <p class="error">Error: {{ error }}</p>
+  } @else if (history.length === 0) {
+    <p class="empty">No trading history yet. History is saved at each 5:30 AM reset.</p>
+  } @else {
+    <div class="history-list">
+      @for (day of history; track day.resetTimestamp) {
+        <mat-expansion-panel class="day-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span class="date">{{ day.date }}</span>
+              <span class="pnl" [class.profit]="getTotalPnl(day) > 0" [class.loss]="getTotalPnl(day) < 0">
+                ${{ getTotalPnl(day) | number:'1.2-2' }}
+              </span>
+            </mat-panel-title>
+            <mat-panel-description>
+              {{ getTradeCount(day) }} paper trades, {{ getLiveTradeCount(day) }} live trades
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="day-content">
+            <div class="two-column">
+              <!-- LONG Section -->
+              <div class="section long-section">
+                <h3>📈 LONG</h3>
+                <div class="pnl-summary">
+                  <div class="pnl-item">
+                    <span class="label">Paper PnL:</span>
+                    <span class="value" [class.profit]="day.long.cumPaperPnl > 0" [class.loss]="day.long.cumPaperPnl < 0">
+                      ${{ day.long.cumPaperPnl | number:'1.2-2' }}
+                    </span>
+                  </div>
+                  <div class="pnl-item">
+                    <span class="label">Live PnL:</span>
+                    <span class="value" [class.profit]="day.long.cumLivePnl > 0" [class.loss]="day.long.cumLivePnl < 0">
+                      ${{ day.long.cumLivePnl | number:'1.2-2' }}
+                    </span>
+                  </div>
+                </div>
+
+                @if (day.long.peakPnlHistory.length > 0) {
+                  <h4>Peak PnL</h4>
+                  <div class="trades-list">
+                    @for (peak of day.long.peakPnlHistory; track peak.timestamp) {
+                      <div class="trade-row peak-row">
+                        <span class="time">{{ peak.timeIst }}</span>
+                        <span class="pnl profit">${{ peak.pnl | number:'1.2-2' }}</span>
+                      </div>
+                    }
+                  </div>
+                }
+
+                @if (day.long.paperTrades.length > 0) {
+                  <h4>Paper Trades ({{ day.long.paperTrades.length }})</h4>
+                  <div class="trades-list">
+                    @for (trade of day.long.paperTrades; track trade.closedAt) {
+                      <div class="trade-row">
+                        <span class="time">{{ trade.timeIst }}</span>
+                        <span class="price">{{ trade.entryPrice | number:'1.2-2' }} → {{ trade.exitPrice | number:'1.2-2' }}</span>
+                        <span class="pnl" [class.profit]="trade.realizedPnl > 0" [class.loss]="trade.realizedPnl < 0">
+                          ${{ trade.realizedPnl | number:'1.2-2' }}
+                        </span>
+                      </div>
+                    }
+                  </div>
+                }
+
+                @if (day.long.liveTrades.length > 0) {
+                  <h4>Live Trades ({{ day.long.liveTrades.filter(t => t.action === 'EXIT').length }})</h4>
+                  <div class="trades-list">
+                    @for (trade of day.long.liveTrades; track trade.id) {
+                      <div class="trade-row" [class.entry]="trade.action === 'ENTRY'" [class.exit]="trade.action === 'EXIT'">
+                        <span class="time">{{ trade.timeIst }}</span>
+                        <span class="action">{{ trade.action }}</span>
+                        <span class="price">@ {{ trade.entryPrice | number:'1.2-2' }}</span>
+                        @if (trade.realizedPnl !== null) {
+                          <span class="pnl" [class.profit]="trade.realizedPnl > 0" [class.loss]="trade.realizedPnl < 0">
+                            ${{ trade.realizedPnl | number:'1.2-2' }}
+                          </span>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+
+                @if (day.long.signals.length > 0) {
+                  <h4>Signals ({{ day.long.signals.length }})</h4>
+                  <div class="trades-list signals">
+                    @for (signal of day.long.signals; track signal.receivedAt) {
+                      <div class="trade-row signal-row">
+                        <span class="time">{{ signal.timeIst }}</span>
+                        <span class="action">{{ signal.intent }}</span>
+                        <span class="price">stoppx: {{ signal.stoppx }}</span>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+
+              <!-- SHORT Section -->
+              <div class="section short-section">
+                <h3>📉 SHORT</h3>
+                <div class="pnl-summary">
+                  <div class="pnl-item">
+                    <span class="label">Paper PnL:</span>
+                    <span class="value" [class.profit]="day.short.cumPaperPnl > 0" [class.loss]="day.short.cumPaperPnl < 0">
+                      ${{ day.short.cumPaperPnl | number:'1.2-2' }}
+                    </span>
+                  </div>
+                  <div class="pnl-item">
+                    <span class="label">Live PnL:</span>
+                    <span class="value" [class.profit]="day.short.cumLivePnl > 0" [class.loss]="day.short.cumLivePnl < 0">
+                      ${{ day.short.cumLivePnl | number:'1.2-2' }}
+                    </span>
+                  </div>
+                </div>
+
+                @if (day.short.peakPnlHistory.length > 0) {
+                  <h4>Peak PnL</h4>
+                  <div class="trades-list">
+                    @for (peak of day.short.peakPnlHistory; track peak.timestamp) {
+                      <div class="trade-row peak-row">
+                        <span class="time">{{ peak.timeIst }}</span>
+                        <span class="pnl profit">${{ peak.pnl | number:'1.2-2' }}</span>
+                      </div>
+                    }
+                  </div>
+                }
+
+                @if (day.short.paperTrades.length > 0) {
+                  <h4>Paper Trades ({{ day.short.paperTrades.length }})</h4>
+                  <div class="trades-list">
+                    @for (trade of day.short.paperTrades; track trade.closedAt) {
+                      <div class="trade-row">
+                        <span class="time">{{ trade.timeIst }}</span>
+                        <span class="price">{{ trade.entryPrice | number:'1.2-2' }} → {{ trade.exitPrice | number:'1.2-2' }}</span>
+                        <span class="pnl" [class.profit]="trade.realizedPnl > 0" [class.loss]="trade.realizedPnl < 0">
+                          ${{ trade.realizedPnl | number:'1.2-2' }}
+                        </span>
+                      </div>
+                    }
+                  </div>
+                }
+
+                @if (day.short.liveTrades.length > 0) {
+                  <h4>Live Trades ({{ day.short.liveTrades.filter(t => t.action === 'EXIT').length }})</h4>
+                  <div class="trades-list">
+                    @for (trade of day.short.liveTrades; track trade.id) {
+                      <div class="trade-row" [class.entry]="trade.action === 'ENTRY'" [class.exit]="trade.action === 'EXIT'">
+                        <span class="time">{{ trade.timeIst }}</span>
+                        <span class="action">{{ trade.action }}</span>
+                        <span class="price">@ {{ trade.entryPrice | number:'1.2-2' }}</span>
+                        @if (trade.realizedPnl !== null) {
+                          <span class="pnl" [class.profit]="trade.realizedPnl > 0" [class.loss]="trade.realizedPnl < 0">
+                            ${{ trade.realizedPnl | number:'1.2-2' }}
+                          </span>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+
+                @if (day.short.signals.length > 0) {
+                  <h4>Signals ({{ day.short.signals.length }})</h4>
+                  <div class="trades-list signals">
+                    @for (signal of day.short.signals; track signal.receivedAt) {
+                      <div class="trade-row signal-row">
+                        <span class="time">{{ signal.timeIst }}</span>
+                        <span class="action">{{ signal.intent }}</span>
+                        <span class="price">stoppx: {{ signal.stoppx }}</span>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      }
+    </div>
+  }
+</section>

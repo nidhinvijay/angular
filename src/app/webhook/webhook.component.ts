@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterLink } from '@angular/router';
 import { WebhookService } from './webhook.service';
 
 @Component({
@@ -15,7 +16,8 @@ import { WebhookService } from './webhook.service';
     MatButtonModule,
     MatCardModule,
     MatChipsModule,
-    MatToolbarModule
+    MatToolbarModule,
+    RouterLink
   ],
   templateUrl: './webhook.component.html',
   styleUrl: './webhook.component.css'

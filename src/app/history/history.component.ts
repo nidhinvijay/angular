@@ -48,12 +48,15 @@ export class HistoryComponent implements OnInit {
 
   loadHistory(): void {
     this.loading = true;
+    console.log('[History] Starting API call...');
     this.http.get<DailySnapshot[]>('/api/history').subscribe({
       next: (data) => {
+        console.log('[History] API success:', data?.length, 'days');
         this.history = data;
         this.loading = false;
       },
       error: (err) => {
+        console.error('[History] API error:', err);
         this.error = err.message;
         this.loading = false;
       }

@@ -77,9 +77,9 @@
               <span class="peak-value profit">${{ state.long.currentPeakPnl.pnl | number:'1.2-2' }}</span>
             </div>
           }
-          @if ((state.long.peakPnlHistory ?? []).length > 0) {
+          @if (state.long.peakPnlHistory.length > 0) {
             <div class="trades-list scrollable">
-              @for (peak of state.long.peakPnlHistory ?? []; track peak.timestamp) {
+              @for (peak of state.long.peakPnlHistory; track peak.timestamp) {
                 <div class="trade-row peak-row">
                   <span class="time">{{ peak.timeIst }}</span>
                   <span class="pnl profit">${{ peak.pnl | number:'1.2-2' }}</span>
@@ -92,9 +92,9 @@
 
           <!-- Paper Trades History -->
           <h4>Paper Trades History <span class="trade-count">({{ state.long.paperTradeCount }} trades)</span></h4>
-          @if ((state.long.paperTrades ?? []).length > 0) {
+          @if (state.long.paperTrades.length > 0) {
             <div class="trades-list scrollable">
-              @for (trade of state.long.paperTrades ?? []; track trade.closedAt) {
+              @for (trade of state.long.paperTrades; track trade.closedAt) {
                 <div class="trade-row">
                   <span class="time">{{ trade.timeIst }} → {{ trade.exitTimeIst }}</span>
                   <span class="price">{{ trade.entryPrice | number:'1.2-2' }} → {{ trade.exitPrice | number:'1.2-2' }}</span>
@@ -131,9 +131,9 @@
 
           <!-- Signal History -->
           <h4>Signal History</h4>
-          @if ((state.long.signals ?? []).length > 0) {
+          @if (state.long.signals.length > 0) {
             <div class="trades-list scrollable">
-              @for (signal of state.long.signals ?? []; track signal.receivedAt) {
+              @for (signal of state.long.signals; track signal.receivedAt) {
                 <div class="trade-row signal-row">
                   <span class="time">{{ signal.timeIst }}</span>
                   <span class="action">{{ signal.intent }}</span>
@@ -220,9 +220,9 @@
               <span class="peak-value profit">${{ state.short.currentPeakPnl.pnl | number:'1.2-2' }}</span>
             </div>
           }
-          @if ((state.short.peakPnlHistory ?? []).length > 0) {
+          @if (state.short.peakPnlHistory.length > 0) {
             <div class="trades-list scrollable">
-              @for (peak of state.short.peakPnlHistory ?? []; track peak.timestamp) {
+              @for (peak of state.short.peakPnlHistory; track peak.timestamp) {
                 <div class="trade-row peak-row">
                   <span class="time">{{ peak.timeIst }}</span>
                   <span class="pnl profit">${{ peak.pnl | number:'1.2-2' }}</span>
@@ -235,9 +235,9 @@
 
           <!-- Paper Trades History -->
           <h4>Paper Trades History <span class="trade-count">({{ state.short.paperTradeCount }} trades)</span></h4>
-          @if ((state.short.paperTrades ?? []).length > 0) {
+          @if (state.short.paperTrades.length > 0) {
             <div class="trades-list scrollable">
-              @for (trade of state.short.paperTrades ?? []; track trade.closedAt) {
+              @for (trade of state.short.paperTrades; track trade.closedAt) {
                 <div class="trade-row">
                   <span class="time">{{ trade.timeIst }} → {{ trade.exitTimeIst }}</span>
                   <span class="price">{{ trade.entryPrice | number:'1.2-2' }} → {{ trade.exitPrice | number:'1.2-2' }}</span>
@@ -274,9 +274,9 @@
 
           <!-- Signal History -->
           <h4>Signal History</h4>
-          @if ((state.short.signals ?? []).length > 0) {
+          @if (state.short.signals.length > 0) {
             <div class="trades-list scrollable">
-              @for (signal of state.short.signals ?? []; track signal.receivedAt) {
+              @for (signal of state.short.signals; track signal.receivedAt) {
                 <div class="trade-row signal-row">
                   <span class="time">{{ signal.timeIst }}</span>
                   <span class="action">{{ signal.intent }}</span>

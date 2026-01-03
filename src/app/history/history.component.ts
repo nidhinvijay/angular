@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -40,7 +40,7 @@ export class HistoryComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.loadHistory();
@@ -54,11 +54,13 @@ export class HistoryComponent implements OnInit {
         console.log('[History] API success:', data?.length, 'days');
         this.history = data;
         this.loading = false;
+        this.cdr.detectChanges();  // Force view update
       },
       error: (err) => {
         console.error('[History] API error:', err);
         this.error = err.message;
         this.loading = false;
+        this.cdr.detectChanges();  // Force view update
       }
     });
   }

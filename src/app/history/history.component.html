@@ -81,7 +81,11 @@
                       <div class="trade-row" [class.entry]="trade.action === 'ENTRY'" [class.exit]="trade.action === 'EXIT'">
                         <span class="time">{{ trade.timeIst }}</span>
                         <span class="action">{{ trade.action }}</span>
-                        <span class="price">@ {{ trade.entryPrice | number:'1.2-2' }}</span>
+                        @if (trade.action === 'EXIT') {
+                          <span class="price">@ {{ trade.exitPrice | number:'1.2-2' }}</span>
+                        } @else {
+                          <span class="price">@ {{ trade.entryPrice | number:'1.2-2' }}</span>
+                        }
                         @if (trade.realizedPnl !== null) {
                           <span class="pnl" [class.profit]="trade.realizedPnl > 0" [class.loss]="trade.realizedPnl < 0">
                             ${{ trade.realizedPnl | number:'1.2-2' }}
@@ -158,7 +162,11 @@
                       <div class="trade-row" [class.entry]="trade.action === 'ENTRY'" [class.exit]="trade.action === 'EXIT'">
                         <span class="time">{{ trade.timeIst }}</span>
                         <span class="action">{{ trade.action }}</span>
-                        <span class="price">@ {{ trade.entryPrice | number:'1.2-2' }}</span>
+                        @if (trade.action === 'EXIT') {
+                          <span class="price">@ {{ trade.exitPrice | number:'1.2-2' }}</span>
+                        } @else {
+                          <span class="price">@ {{ trade.entryPrice | number:'1.2-2' }}</span>
+                        }
                         @if (trade.realizedPnl !== null) {
                           <span class="pnl" [class.profit]="trade.realizedPnl > 0" [class.loss]="trade.realizedPnl < 0">
                             ${{ trade.realizedPnl | number:'1.2-2' }}
